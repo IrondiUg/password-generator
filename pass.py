@@ -1,4 +1,4 @@
-import random, time, os, sys
+import random, os
 
 logo = ("""\033[1;36m
 
@@ -10,12 +10,39 @@ logo = ("""\033[1;36m
 888    888 888 T88b   888          d88888b   
 888  .d88P 888  T88b  888         d88P Y88b  
 8888888P"  888   T88b 8888888888 d88P   Y88b            
-          \n%s    ╔═════════════════════════════╗\n%s    ║  TOOL NAME: {  ULTRON  }    ║\n%s    ║  AUTHOR   : CHIDEXZY        ║\n%s    ╚═════════════════════════════╝
+
+          \n    ╔═════════════════════════════╗\n    ║  TOOL NAME: {  ULTRON  }    ║\n    ║  AUTHOR   : CHIDEXZY        ║\n    ╚═════════════════════════════╝
           \n""" )
 
-alph = 'abcdefghijklmnopqrstuvwxyz'
-num = '1234567890'
-spc = '!@#$%&*?'
+vowels = "aeiou"
+consonants = "bcdfghjklmnpqrstvwxyz"
+num = "1234567890"
+spc = "!@#$%&*?"
+blends = ["st", "tr", "br", "cr", "dr", "gr", "pr", "pl", "cl", "fr", "bl", "ch", "sh", "th"]
+doubles = ["oo", "ee", "ai", "ea", "ou", "ie"]
+syllable_patterns = ["CV", "CVC", "CCV", "CVV"]
+
+def make_syllable(pattern):
+    syll = ""
+    for p in pattern:
+        if p == "C":
+            if len(syll) == 0 and random.random() < 0.25:
+                syll += random.choice(blends)
+            else:
+                syll += random.choice(consonants)
+        elif p == "V":
+            if random.random() < 0.2:
+                syll += random.choice(doubles)
+            else:
+                syll += random.choice(vowels)
+    return syll
+
+def make_readable_base(length=8):
+    word = ""
+    while len(word) < length:
+        pattern = random.choice(syllable_patterns)
+        word += make_syllable(pattern)
+    return word[:length]
 
 class Main:
     def __init__(self):
@@ -26,7 +53,7 @@ class Main:
         print("\033[93;1m [3] ALPHA-NUMERIC")
         print("\033[93;1m [4] ALPHA-NUMERIC + SP")
         print("\033[90;1m [0] EXIT \n")
-        select =input("\033[34;1m Choose : \033[92;1m")
+        select = input("\033[34;1m Choose : \033[92;1m")
         if select in ["1", "01"]:
             alpha()
         if select in ["2", "02"]:
@@ -37,10 +64,8 @@ class Main:
             ansp()
 
 def alpha():
-    password = ''
-    for i in range(1, 10):
-        password +=random.choice(alph)
-    print("Your Password is: " +password)
+    password = make_readable_base(10)
+    print(f"\n{password}")
     input("")
     Main()
 
@@ -48,25 +73,22 @@ def numb():
     password = ''
     for i in range(1, 11):
         password += random.choice(num)
-    print("Your Password is: " + password)
+    print(f"\n{password}")
     input("")
     Main()
 
 def an():
-    password = ''
-    for i in range(1, 11):
-        password += random.choice(num+alph)
-    print("Your Password is: " + password)
+    base = make_readable_base(8)
+    password = random.choice(num) + base + random.choice(num)
+    print(f"\n{password}")
     input("")
     Main()
 
 def ansp():
-    password = ''
-    for i in range(1, 11):
-        password += random.choice(num+alph+spc)
-    print("Your Password is: " + password)
+    base = make_readable_base(7)
+    password = base + random.choice(num) +random.choice(num) + random.choice(spc)
+    print(f"\n{password}")
     input("")
     Main()
-
 
 Main()
